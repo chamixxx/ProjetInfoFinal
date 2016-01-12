@@ -6,7 +6,7 @@
         .controller('LoginController', LoginController);
 
     /* @ngInject */
-    function LoginController($state, triSettings) {
+    function LoginController($scope, $http ,$q ,$mdToast, $state, $filter, $cookies, triSettings) {
         var vm = this;
         vm.loginClick = loginClick;
         vm.socialLogins = [{
@@ -33,10 +33,52 @@
             password: ''
         };
 
+        $scope.user = vm.user;
+    
         ////////////////
 
         function loginClick() {
-            $state.go('triangular.admin-default.dashboard-analytics');
+            console.log("loginClick");
+            var future = $scope.commLogin($scope.user);
+            future.then(
+                function(payload) {
+                    console.log("console.log(payload)");
+                    console.log(payload);
+                    $cookies.put('userMail',payload.email);
+                    $state.go('triangular.admin-default.dashboard-analytics');
+                },
+                function(errorPayload) {
+                    console.log('error'+errorPayload);
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .content($filter('translate')('LOGIN.MESSAGES.ACCESS_DENIED'))
+                        .position('bottom right')
+                        .hideDelay(5000)
+                    );
+                }
+            );
         }
-    }
+
+        $scope.commLogin = function(user) {
+            console.log("commLogin user : ");
+            console.log(user);
+            var deferred = $q.defer();
+            var req = {
+                method: 'GET',
+                url: '/authentication/login',
+                params: user
+            }
+            $http(req).success(function(data, status, headers, config) {
+                console.log("console.log(data)");
+                    console.log(data);
+                    deferred.resolve(data);
+                }).
+                error(function(data, status, headers, config) {
+                    deferred.reject(status);
+                });
+            return deferred.promise;
+        };
+
+    } 
+
 })();
