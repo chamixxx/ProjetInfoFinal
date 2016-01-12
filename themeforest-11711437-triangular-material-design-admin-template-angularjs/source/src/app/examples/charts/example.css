@@ -18,6 +18,7 @@
 }
 .container {
   display: table-cell;
+  width: 50%;
 }
 
 /*
@@ -26,7 +27,7 @@
  */
 .container div,
 .gu-mirror {
-
+  margin: 10px;
   transition: opacity 0.4s ease-in-out;
 }
 .container div {
