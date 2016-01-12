@@ -1,0 +1,64 @@
+<div class="padded-content-page" ng-controller="chartManager">
+<link href='/app/examples/charts/example.css' rel='stylesheet' type='text/css' />
+    <p class="md-subhead">Example meteo</p>
+    <md-button class="md-fab" aria-label="fab button" ng-click="addChart()">
+        <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
+    </md-button>
+
+     <div class="example-code md-whiteframe-z1 margin-bottom-20" ng-show="showAddMenu">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Select chart options</h2>
+            </div>
+        </md-toolbar>
+        <div class="md-tabs-content padding-40">
+            <md-card>
+                <md-select placeholder="Choose a city" ng-model="chartOption.city">
+                    <md-option value="Paris">Paris</md-option>
+                    <md-option value="Lyon">Lyon</md-option>
+                    <md-option value="Geneve">Geneve</md-option>
+                    <md-option value="Lausanne">Lausanne</md-option>
+                </md-select>
+            </md-card>
+
+            <md-card>
+                <md-select placeholder="Choose a graph type" ng-model="chartOption.type">
+                    <md-option value="Bar">Bar</md-option>
+                    <md-option value="Line">Line</md-option>
+                </md-select>
+            </md-card>
+            
+            <md-button class="md-raised" ng-class="['md-primary']" aria-label="raised button" ng-click="add()">Add</md-button>
+            <md-button class="md-raised" ng-class="['md-warn']" aria-label="raised button" ng-click="cancel()">Cancel</md-button>
+        </div>
+     </div>
+
+    <div class='parent'>
+        <div class='wrapper'>
+          <div class='container' dragula='"first-bag"'>
+            <div ng-repeat="chart in chartsLine">
+                 <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding>
+                 <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series"></canvas>
+            </tri-widget>
+            </div>
+          </div>
+          <div class='container' dragula='"first-bag"'>
+            <div ng-repeat="chart in chartsBar">
+                 <tri-widget chartjs-bar-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding>
+                 <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series"></canvas>
+            </tri-widget>
+            </div>
+          </div>
+           <div class='container' dragula='"first-bag"'>
+            <div ng-repeat="chart in chartsBar">
+                 <tri-widget chartjs-bar-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding>
+                 <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series"></canvas>
+            </tri-widget>
+            </div>
+          </div>
+            
+          </div>
+    </div>
+</div>
+<script src="app/examples/charts/chartManagerCtrl.js"></script>
+
