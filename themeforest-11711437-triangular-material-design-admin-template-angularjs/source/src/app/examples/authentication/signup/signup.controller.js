@@ -26,7 +26,7 @@
         function signupClick() {
             $http({
                 method: 'POST',
-                url: '/signup',
+                url: '/authentication/signup',
                 data: $scope.user
             }).
             success(function(data) {
