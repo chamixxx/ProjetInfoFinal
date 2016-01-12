@@ -13,12 +13,16 @@ app.use(bodyParser.urlencoded({
 })); 
 
 
+//Router Definition
 var authRoute = require("./app/routes/auth.route.js");
-var server = http.createServer(app);
 
+
+//launch Server
+var server = http.createServer(app);
 server.listen(1300, function(){
   console.log('web server listening on port 1300');
 });
+
 
 //ROUTES
 app.use("/authentication", authRoute);
