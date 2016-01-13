@@ -1,12 +1,9 @@
 angular.module('app').controller('chartManager',chartManagerFnt);
 
-chartManagerFnt.$inject=['$scope', '$log', '$window', '$cookies', '$q', '$http'];
+chartManagerFnt.$inject=['$scope', '$log', '$q', '$http'];
 
-function chartManagerFnt($scope, $log, $window, $cookies, $q, $http) {
-	$scope.charts = {
-		"chartsLine":[],
-		"chartsBar":[]
-	};
+function chartManagerFnt($scope, $log, $q, $http) {
+	$scope.charts = [];
 	$scope.chartsLine = [];
 	$scope.chartsBar = [];
 
@@ -57,17 +54,17 @@ function chartManagerFnt($scope, $log, $window, $cookies, $q, $http) {
 					"labels":labels,
 					"series":series,
 					"options":options,
-					"data":data
+					"data":data,
+					"type":$scope.chartOption.type
 				}
 
 				if ($scope.chartOption.type == "Line") {
 					$scope.chartsLine.push(option);
-					$scope.charts.chartsLine = $scope.chartsLine;
+					$scope.charts.push(option);
 				}
 				if ($scope.chartOption.type == "Bar") {
 					$scope.chartsBar.push(option);
-					$scope.charts.chartsBar = $scope.chartsBar;
-				}
+					$scope.charts.push(option);				}
             },
             function(errorPayload){
                 $log.info('errorPayload',errorPayload)              
@@ -89,5 +86,4 @@ function chartManagerFnt($scope, $log, $window, $cookies, $q, $http) {
             });
         return deferred.promise;
     };
-
 }

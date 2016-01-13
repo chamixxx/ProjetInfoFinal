@@ -1,5 +1,4 @@
 <div class="padded-content-page" ng-controller="chartManager">
-<link href='/app/examples/charts/example.css' rel='stylesheet' type='text/css' />
     <p class="md-subhead">Example meteo</p>
     <md-button class="md-fab" aria-label="fab button" ng-click="addChart()">
         <md-icon md-font-icon="zmdi zmdi-plus"></md-icon>
@@ -32,68 +31,24 @@
             <md-button class="md-raised" ng-class="['md-warn']" aria-label="raised button" ng-click="cancel()">Cancel</md-button>
         </div>
      </div>
+  
 
-     <md-grid-list md-cols-gt-md="12" md-cols-xs="3" md-cols-md="8" md-row-height-gt-md="1:1" md-row-height="4:3" md-gutter-gt-md="16px" md-gutter-gt-xs="8px" md-gutter="4px">
-      
+<div layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 32px; margin-left:32px;" ng-cloak dragula='"first-bag"' dragula-model='charts'>
+  <div  flex-sm="45" flex-gt-sm="30" flex-gt-md="30" layout layout-align="center center" ng-repeat="chart in charts">
+    <span ng-show="{{chart.type == 'Line'}}">
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding >
+      <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
+    </tri-widget>
+    </span>
+    <span ng-show="{{chart.type == 'Bar'}}">
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding >
+      <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
+    </tri-widget>
+    </span>
+    
+    </div>
+ </div>
 
-      <md-grid-tile  md-colspan-gt-xs="2" md-rowspan-gt-xs="2" ng-style="::{ 'background':'blue' }">
-        </md-grid-tile>
-     
-        
-    </md-grid-list>
-   
-
-    <!-- <div class='parent'>
-        <div class='wrapper'>
-          <div class='container' dragula='"first-bag"'>
-
-            <md-card>
-               <div class="content-padded">
-                  <h2 class="md-title">Meteo Test live</h2>
-                   <md-card-content ng-controller="ChartJsTickerController as vm" ng-include="'app/examples/charts/examples/chartjs-ticker.tmpl.html'"></md-card-content>
-                   <md-divider></md-divider>
-                    <div class="button-toolbar" layout="row" layout-align="start center">
-                        <md-button class="md-accent">Share</md-button>
-                        <md-button class="md-accent">Print</md-button>
-                        <md-button class="md-accent">Refresh</md-button>
-                    </div>
-                  </div>
-                </md-card>
-                
-            <div ng-repeat="chart in chartsLine">
-               <md-card>
-               <div class="content-padded">
-                  <h2 class="md-title">Meteo {{chart.city}}</h2>
-                   <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series"></canvas>
-                   <md-divider></md-divider>
-                    <div class="button-toolbar" layout="row" layout-align="start center">
-                        <md-button class="md-accent">Share</md-button>
-                        <md-button class="md-accent">Print</md-button>
-                        <md-button class="md-accent">Refresh</md-button>
-                    </div>
-                  </div>
-                </md-card>
-            </div>
-            <div ng-repeat="chart in chartsBar">
-                <md-card>
-                  <div class="content-padded">
-                    <h2 class="md-title">Meteo {{chart.city}}</h2>
-                    <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series"></canvas>
-                    <md-divider></md-divider>
-                    <div class="button-toolbar" layout="row" layout-align="start center">
-                        <md-button class="md-accent">Share</md-button>
-                        <md-button class="md-accent">Print</md-button>
-                        <md-button class="md-accent">Refresh</md-button>
-                    </div>
-                  </div>
-                </md-card>
-            </div>
-          </div>
-          <div class='container' dragula='"first-bag"'>
-
-          </div>
-          </div>
-    </div> -->
 </div>
 <script src="app/examples/charts/chartManagerCtrl.js"></script>
 
