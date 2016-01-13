@@ -10,6 +10,7 @@
         $scope.userMail = $cookies.get('userMail');
         console.log($scope.userMail);
         var vm = this;
+        vm.updateSettingsClick = updateSettingsClick;
         vm.settingsGroups = [{
             name: 'ADMIN.NOTIFICATIONS.ACCOUNT_SETTINGS',
             settings: [{
@@ -62,7 +63,6 @@
             return deferred.promise;
         };
 
-
         console.log("profileClick");
         var future = $scope.commProfile($scope.userMail);
         future.then(
@@ -90,6 +90,45 @@
         );
 
 
+
+
+
+        function updateSettingsClick() {
+            var future = $scope.commUpdateSettings($scope.userMail);
+            future.then(
+                function(payload) {
+                    $cookies.remove('userMail');
+                    $cookies.put('userMail',payload.email);
+                    $scope.userMail = $cookies.get('userMail');
+                    alert("profile upadated.");
+                },
+                function(errorPayload) {
+                    console.log('error'+errorPayload);
+                }
+            );
+        }
+        
+        $scope.commUpdateSettings = function(userMail) {
+            var deferred = $q.defer();
+            console.log("coucou");
+            var req = {
+                method: 'POST',
+                url: '/authentication/profileupdateprofile',
+                data: {
+                    oldemail: userMail,
+                    name: vm.user.name,
+                    email: vm.user.email
+                }
+            }
+            $http(req).success(function(data, status, headers, config) {
+                    deferred.resolve(data);
+                }).
+                error(function(data, status, headers, config) {
+                    console.log("error !");
+                    deferred.reject(status);
+                });
+        return deferred.promise;
+        };
 
 
 
