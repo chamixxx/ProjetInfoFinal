@@ -35,16 +35,12 @@
 
 <div layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 32px; margin-left:32px;" ng-cloak dragula='"first-bag"' dragula-model='charts'>
   <div  flex-sm="45" flex-gt-sm="30" flex-gt-md="30" layout layout-align="center center" ng-repeat="chart in charts">
-    <span ng-show="{{chart.type == 'Line'}}">
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding >
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-show="{{chart.type == 'Line'}}">
       <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
-    </span>
-    <span ng-show="{{chart.type == 'Bar'}}">
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding >
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-show="{{chart.type == 'Bar'}}">
       <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
-    </span>
     
     </div>
  </div>
