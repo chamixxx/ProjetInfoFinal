@@ -86,7 +86,37 @@ router.route("/profile")
     	console.log("error, user profile does not exist.");
     	res.status(500).send("error, user profile does not exist.");
     }
-  
 });
 
+router.route("/profileupdateprofile")
+	.post(function(request,res) {
+	console.log("updatesettings request : ");
+ 	console.log(request.body);
+ 	console.log("userMap : ");
+ 	console.log(userMap);
+ 	if ((request.body.oldemail in userMap)) {
+ 		if (request.body.oldemail != request.body.email) {
+ 			var userTmp = {
+            	name: request.body.name,
+            	email: request.body.email,
+            	password: userMap[request.body.oldemail].password,
+            	confirm: userMap[request.body.oldemail].password
+        	};
+
+        	delete userMap[request.body.oldemail];  
+        	userMap[request.body.email] = userTmp;
+        	console.log("new usermap : ");
+        	console.log(userMap);
+        	res.status(200).send(userMap[request.body.email]);
+    		console.log("user updated");
+ 		}
+    	else {
+    		res.status(500).send("error, updating profile.");
+    	}
+    }
+    else {
+    	console.log("error, email profile does not exist.");
+    	res.status(500).send("error, email profile does not exist.");
+    }
+});
 
