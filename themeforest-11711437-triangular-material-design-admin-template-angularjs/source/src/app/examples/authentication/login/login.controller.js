@@ -45,6 +45,7 @@
                     console.log("console.log(payload)");
                     console.log(payload);
                     $cookies.put('userMail',payload.email);
+                    $cookies.put('userName',payload.name);
                     $state.go('triangular.admin-default.dashboard-analytics');
                 },
                 function(errorPayload) {
@@ -74,6 +75,7 @@
                     deferred.resolve(data);
                 }).
                 error(function(data, status, headers, config) {
+                    console.log("deferred.reject");
                     deferred.reject(status);
                 });
             return deferred.promise;
