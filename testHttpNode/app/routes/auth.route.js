@@ -4,7 +4,7 @@ var router = express.Router();
 module.exports = router;
 var bodyParser = require('body-parser');
 var querystring = require('querystring');
-
+var dbContrtoller = require('../DBcontroller/db.controller.js');
 
 router.use( bodyParser.json() );       
 router.use(bodyParser.urlencoded({     
@@ -32,7 +32,6 @@ var userMap={};
             confirm: 'zzzzzzzz'
         };
 
-
 router.route("/signup")
 	.post(function(request,res) {
  	console.log(request.body);
@@ -44,6 +43,7 @@ router.route("/signup")
     	console.log("userMap 2 : ");
     	console.log(userMap);
     	console.log(userMap[request.body.email]);
+        dbContrtoller.addUser(userMap[request.body.email]);
     	res.status(200).send(userMap[request.body.email]);
     	console.log("user added 2");
     }
@@ -57,20 +57,25 @@ router.route("/login")
 	.get(function(request,res) {
 	console.log("login");
  	console.log(request.query);
- 	if (request.query.email in userMap) {
- 		if (request.query.password == userMap[request.query.email].password) {
- 			console.log("user login ok");
-    		res.status(200).send(userMap[request.query.email]);
-    	}
-    	else {
-    		res.status(500).send("Wrong password.");
-    	}
+
+    dbContrtoller.findUser(request.query.email, function(dbUser){
+        console.log("dbUser[0].email : ");
+        console.log(dbUser[0].email);
+        console.log(request.query.email);
+        if (dbUser[0].email == request.query.email) {
+            if (request.query.password == dbUser[0].password) {
+                console.log("user login ok");
+                res.status(200).send(dbUser[0]);
+            }
+        else {
+            res.status(500).send("Wrong password.");
+        }
     }
     else {
-    	console.log("error, email does not exist.");
-    	res.status(500).send("error, email does not exist.");
+        console.log("error, email does not exist.");
+        res.status(500).send("error, email does not exist.");
     }
-  
+    });
 });
 
 
@@ -78,16 +83,21 @@ router.route("/profile")
 	.get(function(request,res) {
 	console.log("profile");
  	console.log(request.query.email);
- 	if (request.query.email in userMap) {
- 		console.log("user profile ok");
-    	res.status(200).send(userMap[request.query.email]);
-    }
-    else {
-    	console.log("error, user profile does not exist.");
-    	res.status(500).send("error, user profile does not exist.");
-    }
+
+    dbContrtoller.findUser(request.query.email, function(dbUser){
+        if (dbUser[0].email == request.query.email) {
+            console.log("user profile ok");
+            res.status(200).send(dbUser[0]);
+        }
+        else {
+            console.log("error, user profile does not exist.");
+            res.status(500).send("error, user profile does not exist.");
+        }
+    });
 });
 
+
+// To do: do it with mongoDB !!
 router.route("/profileupdateprofile")
 	.post(function(request,res) {
 	console.log("updatesettings request : ");
