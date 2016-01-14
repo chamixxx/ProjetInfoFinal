@@ -3,9 +3,8 @@ angular.module('app').controller('chartManager',chartManagerFnt);
 chartManagerFnt.$inject=['$scope', '$log', '$q', '$http'];
 
 function chartManagerFnt($scope, $log, $q, $http) {
-	$scope.charts = [];
-	$scope.chartsLine = [];
-	$scope.chartsBar = [];
+	$scope.chartsSmall = [];
+	$scope.chartsBig = [];
 
 	$scope.showAddMenu = false;
 	$scope.chartOption = {};
@@ -55,24 +54,22 @@ function chartManagerFnt($scope, $log, $q, $http) {
 					"series":series,
 					"options":options,
 					"data":data,
-					"type":$scope.chartOption.type
+					"type":$scope.chartOption.type,
+					"size":$scope.chartOption.size
 				}
 
-				if ($scope.chartOption.type == "Line") {
-					$scope.chartsLine.push(option);
-					$scope.charts.push(option);
+				if ($scope.chartOption.size == "Small") {
+					$scope.chartsSmall.push(option);
 				}
-				if ($scope.chartOption.type == "Bar") {
-					$scope.chartsBar.push(option);
-					$scope.charts.push(option);				}
+				if ($scope.chartOption.size == "Big") {
+					$scope.chartsBig.push(option);				}
             },
             function(errorPayload){
                 $log.info('errorPayload',errorPayload)              
             }
         );
-		
-		
-		console.log($scope.charts);
+		console.log($scope.chartsSmall);
+		console.log($scope.chartsBig);
 	};
 
 	function getData(city) { 

@@ -26,6 +26,13 @@
                     <md-option value="Line">Line</md-option>
                 </md-select>
             </md-card>
+
+             <md-card>
+                <md-select placeholder="Choose a graph size" ng-model="chartOption.size">
+                    <md-option value="Small">Small</md-option>
+                    <md-option value="Big">Big</md-option>
+                </md-select>
+            </md-card>
             
             <md-button class="md-raised" ng-class="['md-primary']" aria-label="raised button" ng-click="add()">Add</md-button>
             <md-button class="md-raised" ng-class="['md-warn']" aria-label="raised button" ng-click="cancel()">Cancel</md-button>
@@ -33,17 +40,34 @@
      </div>
   
 
-<div layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 32px; margin-left:32px;" ng-cloak dragula='"first-bag"' dragula-model='charts'>
-  <div  flex-sm="45" flex-gt-sm="30" flex-gt-md="30" layout layout-align="center center" ng-repeat="chart in charts">
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-show="{{chart.type == 'Line'}}">
+<div layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 32px; margin-left:32px;" ng-cloak dragula='"first-bag"' dragula-model='chartsSmall'>
+  <div  flex-sm="45" flex-gt-sm="30" flex-gt-md="30" layout layout-align="center center"   ng-repeat="chart in chartsSmall">
+  {{$index}}
+  <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Line'">
       <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-show="{{chart.type == 'Bar'}}">
+   
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Bar'">
       <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
     
     </div>
  </div>
+
+<div layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 32px; margin-left:32px;" ng-cloak dragula='"secong-bag"' dragula-model='chartsBig'>
+  
+  <div  flex-sm="90" flex-gt-sm="90" flex-gt-md="90" layout layout-align="center center" ng-repeat="chart in chartsBig">
+  {{$index}}
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Line'">
+      <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
+    </tri-widget>
+   
+    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Bar'">
+      <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
+    </tri-widget>
+    
+    </div> 
+    </div>
 
 </div>
 <script src="app/examples/charts/chartManagerCtrl.js"></script>
