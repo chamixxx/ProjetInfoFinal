@@ -1,14 +1,36 @@
 angular.module('app').controller('chartManager',chartManagerFnt);
 
-chartManagerFnt.$inject=['$scope', '$log', '$q', '$http'];
+chartManagerFnt.$inject=['$scope', '$log', '$q', '$http', '$cookies'];
 
-function chartManagerFnt($scope, $log, $q, $http) {
+function chartManagerFnt($scope, $log, $q, $http, $cookies) {
 	$scope.chartsSmall = [];
 	$scope.chartsBig = [];
+	$scope.dashboard = {
+		'chartsSmall':$scope.chartsSmall,
+		'chartsBig':$scope.chartsBig
+	};
 
 	$scope.showAddMenu = false;
 	$scope.chartOption = {};
 
+
+	var dashboardFuture = getDasboard();
+	dashboardFuture.then(
+            function(payload) {
+            	$log.info('getDasboard :',payload); 
+            	angular.forEach(payload.dashboard.chartsSmall , function(value) {
+                  this.push(value);
+                }, $scope.chartsSmall);
+
+                angular.forEach(payload.dashboard.chartsBig , function(value) {
+                  this.push(value);
+                }, $scope.chartsBig);
+                $log.info('Big :',$scope.chartsBig); 
+            },
+            function(errorPayload){
+                $log.error('errorPayload',errorPayload);             
+            }
+        );
 	
 	$scope.addChart = function() {
 		$scope.showAddMenu = true;
@@ -16,7 +38,6 @@ function chartManagerFnt($scope, $log, $q, $http) {
 
 	$scope.cancel = function() {
 		$scope.showAddMenu = false;
-		
 	};
 
 	$scope.add = function() {
@@ -83,4 +104,60 @@ function chartManagerFnt($scope, $log, $q, $http) {
             });
         return deferred.promise;
     };
+
+    $scope.saveDashboard = function() {
+    	
+    	var futureSave = postDashboard();
+    	futureSave.then(
+            function(payload) {
+            	alert("Saved");
+            	$log.info('Save :',payload);   			
+            },
+            function(errorPayload){
+                $log.error('errorPayload',errorPayload);             
+            }
+        );
+    } 
+
+    function postDashboard() {
+    	var deferred = $q.defer();
+		var req = {
+ 				method: 'POST',
+ 				url: '/dashboard/saveDashboard',
+ 				headers: {
+   					'Content-Type': 'application/json'
+ 				},
+ 				data: {
+ 					'dashboard':$scope.dashboard,
+ 					'email':$cookies.get('userMail')
+ 				}
+		}
+
+		$http(req).success(function(data, status, headers, config) {
+			 	deferred.resolve(data);
+			}).
+			error(function(data, status, headers, config) {
+				deferred.reject(status);
+			});
+		return deferred.promise;
+    }
+
+    function getDasboard() {
+    	var req = {
+	    		url: '/dashboard/getDashboard', 
+			    method: "GET",
+			    params: {
+			    	"email":$cookies.get('userMail')
+				}
+ 			}
+		var deferred = $q.defer();
+		$http(req).success(function(data, status, headers, config) {
+			 	deferred.resolve(data)
+			}).
+			error(function(data, status, headers, config) {
+				deferred.reject(status);
+			});
+        return deferred.promise;
+	};
+    
 }

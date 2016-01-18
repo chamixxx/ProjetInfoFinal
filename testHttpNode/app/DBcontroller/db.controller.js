@@ -3,6 +3,7 @@
 // to run mongo : mongod --dbpath data/db
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
+var ObjectId = require('mongodb').ObjectID;
 
 var url = 'mongodb://localhost:27017/test';
 
@@ -34,14 +35,14 @@ DBController.addUser = function(user){
 	});
 }
 
-DBController.findUser = function(user, callback){
-	console.log("DBController findUser function, user : ");
-	console.log(user);
+DBController.find = function(userMail, collectionName, callback){
+	console.log("DBController find function, userMail : ");
+	console.log(userMail);
 
 
 MongoClient.connect(url, function(err, db) {
   assert.equal(null, err);
-  console.log("MongoDB (test find user) connected correctly to server. with url : " + url);
+  console.log("MongoDB (test find) connected correctly to server. with url : " + url);
 
   if (err) {
     console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -50,10 +51,10 @@ MongoClient.connect(url, function(err, db) {
     console.log('Connection established to', url);
 
     // Get the documents collection
-    var collection = db.collection('users');
+    var collection = db.collection(collectionName);
 
     // Insert some users
-    collection.find({email: user}).toArray(function (err, result) {
+    collection.find({email: userMail}).toArray(function (err, result) {
       if (err) {
         console.log(err);
       } else if (result.length) {
@@ -61,6 +62,7 @@ MongoClient.connect(url, function(err, db) {
         callback(result);
       } else {
         console.log('No document(s) found with defined "find" criteria!');
+        callback([]);
       }
       //Close connection
       db.close();
@@ -68,6 +70,42 @@ MongoClient.connect(url, function(err, db) {
   }
 
 });
+}
+
+DBController.saveDashboard = function(data){
+  console.log("DBController saveDashboard function, data : ");
+  console.log(data);
+
+  MongoClient.connect(url, function(err, db) {
+      assert.equal(null, err);
+
+      DBController.find(data.email, 'dashboards', function(userBoard){
+        var collection = db.collection('dashboards');
+        console.log(userBoard);
+        if (userBoard.length > 0) {
+          console.log("email: " + userBoard[0].email);
+          collection.updateOne(
+          { "email" : userBoard[0].email },
+          { $set: { "dashboard": data.dashboard } },
+          function(err, results) {
+            console.log("update");
+          });
+
+        }
+        else {
+          collection.insert(data, function (err, result) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log('Inserted %d documents into the "dashboards" collection. The documents inserted with "_id" are:', result.length, result);
+            }
+            //Close connection
+            db.close();
+          });   
+        }
+      });
+
+  });
 }
 
 

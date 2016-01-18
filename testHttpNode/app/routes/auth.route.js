@@ -12,53 +12,29 @@ router.use(bodyParser.urlencoded({
 })); 
 
 
-var userMap={};
-	userMap['jdoe@a.com']={
-            name: 'jdoe',
-            email: 'jdoe@a.com',
-            password: 'jdoepwd',
-            confirm: 'jdoepwd'
-        };
-	userMap['james@bond.com']={
-            name: 'james',
-            email: 'james@bond.com',
-            password: 'bond',
-            confirm: 'bond'
-        };
-    userMap['z@z']={
-        	name: 'z',
-        	email: 'z@z',
-            password: 'zzzzzzzz',
-            confirm: 'zzzzzzzz'
-        };
-
 router.route("/signup")
 	.post(function(request,res) {
  	console.log(request.body);
- 	console.log("userMap : ");
- 	console.log(userMap);
- 	if (!(request.body.email in userMap)) {
-    	userMap[request.body.email] = request.body;
-    	console.log("user added");
-    	console.log("userMap 2 : ");
-    	console.log(userMap);
-    	console.log(userMap[request.body.email]);
-        dbContrtoller.addUser(userMap[request.body.email]);
-    	res.status(200).send(userMap[request.body.email]);
-    	console.log("user added 2");
-    }
-    else {
-    	console.log("error, email already exist.");
-    	res.status(500).send("error, email already exist.");
-    }
-});
+    dbContrtoller.find(request.body.email, 'users', function(dbUser) {
+        if (dbUser.length>0) {
+            console.log("error, email already exist.");
+            res.status(500).send("error, email already exist.");
+        }
+        else {
+            dbContrtoller.addUser(request.body);
+            res.status(200).send(request.body);
+            console.log("user added 2");
+        }
+        });
+    });
+ 
 
 router.route("/login")
 	.get(function(request,res) {
 	console.log("login");
  	console.log(request.query);
 
-    dbContrtoller.findUser(request.query.email, function(dbUser){
+    dbContrtoller.find(request.query.email, 'users', function(dbUser){
         console.log("dbUser[0].email : ");
         console.log(dbUser[0].email);
         console.log(request.query.email);
