@@ -72,7 +72,7 @@ MongoClient.connect(url, function(err, db) {
 });
 }
 
-DBController.saveDashboard = function(data){
+DBController.saveDashboard = function(data, callback){
   console.log("DBController saveDashboard function, data : ");
   console.log(data);
 
@@ -90,7 +90,7 @@ DBController.saveDashboard = function(data){
           function(err, results) {
             console.log("update");
           });
-
+          callback();
         }
         else {
           collection.insert(data, function (err, result) {

@@ -14,8 +14,9 @@ router.use(bodyParser.urlencoded({
 router.route("/saveDashboard")
 	.post(function(request,res) {
 	 	console.log(request.body);
-        dbContrtoller.saveDashboard(request.body);
-		res.status(200).send(request.body);
+        dbContrtoller.saveDashboard(request.body, function() {
+        	res.status(200).send(request.body);
+        });
 	});
 
 router.route("/getDashboard")
