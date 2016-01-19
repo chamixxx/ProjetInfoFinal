@@ -108,5 +108,66 @@ DBController.saveDashboard = function(data, callback){
   });
 }
 
+DBController.saveDataFromRos = function(data, callback){
+  console.log("DBController saveDataFromRos function, data : ");
+  console.log(data);
+
+  MongoClient.connect(url, function(err, db) {
+      assert.equal(null, err);
+      var collection = db.collection('detected_users');
+
+      collection.insert(data, function (err, result) {
+        if (err) {
+          console.log(err);
+        } 
+        else {
+          console.log('Inserted %d documents into the "dashboards" collection. The documents inserted with "_id" are:', result.length, result);
+          callback();
+        }
+        //Close connection
+        db.close();
+      }); 
+  });
+}
+
+DBController.getDataFromRos = function(collectionName, date, callback){
+  console.log("DBController getDataFromRos function, collectionName : ");
+  console.log(collectionName);
+
+
+MongoClient.connect(url, function(err, db) {
+  assert.equal(null, err);
+  console.log("MongoDB (test find) connected correctly to server. with url : " + url);
+
+  if (err) {
+    console.log('Unable to connect to the mongoDB server. Error:', err);
+  } else {
+    //HURRAY!! We are connected. :)
+    console.log('Connection established to', url);
+
+    // Get the documents collection
+    var collection = db.collection(collectionName);
+
+    // Insert some users
+    collection.find({'date': date}).toArray(function (err, result) {
+      if (err) {
+        console.log(err);
+      } else if (result.length) {
+        console.log('Found:');
+        callback(result);
+      } else {
+        console.log('No document(s) found with defined "find" criteria!');
+        callback([]);
+      }
+      //Close connection
+      db.close();
+    });
+  }
+
+});
+}
+
+
+
 
 module.exports = DBController;

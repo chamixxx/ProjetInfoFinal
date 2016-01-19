@@ -41,6 +41,9 @@ function chartManagerFnt($scope, $log, $q, $http, $cookies) {
 	};
 
 	$scope.add = function() {
+
+		getDataROS("detected_users");
+
 		$scope.showAddMenu = false;
 
 		var labels = [];
@@ -48,54 +51,127 @@ function chartManagerFnt($scope, $log, $q, $http, $cookies) {
         var options = {};
         var data = [];
 
-		var future = getData($scope.chartOption.city);
-        future.then(
-            function(payload) {
-                $log.info('meteo',payload);
-                var hours = [];
-                var row = [];
-                
-                angular.forEach(payload.fcst_day_0.hourly_data , function(value, key) {
-                  this.push(key);
-                  row.push(value.TMP2m);
-                }, hours);
+		if ($scope.chartOption.dataType == 'Meteo') {
+			var future = getDataMeteo($scope.chartOption.city);
+		        future.then(
+		            function(payload) {
+		                $log.info('meteo',payload);
+		                var hours = [];
+		                var row = [];
+		                
+		                angular.forEach(payload.fcst_day_0.hourly_data , function(value, key) {
+		                  this.push(key);
+		                  row.push(value.TMP2m);
+		                }, hours);
 
+		                labels = hours;
+		                series = ['Series A'];
+		                options = {
+		                    datasetFill: false
+		                };
 
-                labels = hours;
-                series = ['Series A'];
-                options = {
-                    datasetFill: false
-                };
+		                data.push(row);
 
-                data.push(row);
+		                var option = {
+		                	"dataType":$scope.chartOption.dataType,
+							"city":$scope.chartOption.city,
+							"labels":labels,
+							"series":series,
+							"options":options,
+							"data":data,
+							"type":$scope.chartOption.type,
+							"size":$scope.chartOption.size
+						}
 
-                var option = {
-					"city":$scope.chartOption.city,
-					"labels":labels,
-					"series":series,
-					"options":options,
-					"data":data,
-					"type":$scope.chartOption.type,
-					"size":$scope.chartOption.size
-				}
+						if ($scope.chartOption.size == "Small") {
+							$scope.chartsSmall.push(option);
+						}
+						if ($scope.chartOption.size == "Big") {
+							$scope.chartsBig.push(option);				
+						}
+		            },
+		            function(errorPayload){
+		                $log.info('errorPayload',errorPayload)              
+		            }
+		        );
+		}
+		else if ($scope.chartOption.dataType == 'ROS') {
+			var future = getDataROS($scope.chartOption.topic);
+		        future.then(
+		            function(payload) {
+		                $log.info('dataROS',payload);
+		                var seconds = [];
+		                var rows = {
+		                	'cam1':[],
+		                	'cam2':[],
+		                	'cam3':[]
+		                };
+		                
+		                angular.forEach(payload, function(value) {
+		                  this.push(value.time);
+		                  rows.cam1.push(value.camera1);
+		                  rows.cam2.push(value.camera2);
+						  rows.cam3.push(value.camera3);
+		                }, seconds);
 
-				if ($scope.chartOption.size == "Small") {
-					$scope.chartsSmall.push(option);
-				}
-				if ($scope.chartOption.size == "Big") {
-					$scope.chartsBig.push(option);				}
-            },
-            function(errorPayload){
-                $log.info('errorPayload',errorPayload)              
-            }
-        );
-		console.log($scope.chartsSmall);
-		console.log($scope.chartsBig);
+		                
+		                labels = seconds;
+		                series = ['cam1','cam2','cam3'];
+		                options = {
+		                    datasetFill: false
+		                };
+
+		                data.push(rows.cam1);
+		                data.push(rows.cam2);
+		                data.push(rows.cam3);
+
+		                var option = {
+		                	"dataType":$scope.chartOption.dataType,
+							"city":$scope.chartOption.topic,
+							"labels":labels,
+							"series":series,
+							"options":options,
+							"data":data,
+							"type":$scope.chartOption.type,
+							"size":$scope.chartOption.size
+						}
+
+						if ($scope.chartOption.size == "Small") {
+							$scope.chartsSmall.push(option);
+						}
+						if ($scope.chartOption.size == "Big") {
+							$scope.chartsBig.push(option);				
+						}
+		            },
+		            function(errorPayload){
+		                $log.info('errorPayload',errorPayload)              
+		            }
+		        );
+		}	
 	};
 
-	function getData(city) { 
+	function getDataMeteo(city) { 
         var deferred = $q.defer();
         $http.get('http://www.prevision-meteo.ch/services/json/'+city).
+            success(function(data, status, headers, config) {
+                deferred.resolve(data)
+            }).
+            error(function(data, status, headers, config) {
+                deferred.reject(status);
+            });
+        return deferred.promise;
+    };
+
+    function getDataROS(collection) { 
+        var deferred = $q.defer();
+        var req = {
+	    		url: '/detectedUsers/getDetectedUsers', 
+			    method: "GET",
+			    params: {
+			    	"collection":collection
+				}
+ 			}
+        $http(req).
             success(function(data, status, headers, config) {
                 deferred.resolve(data)
             }).

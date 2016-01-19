@@ -16,6 +16,8 @@ app.use(bodyParser.urlencoded({
 //Router Definition
 var authRoute = require("./app/routes/auth.route.js");
 var dashRoute = require("./app/routes/dash.route.js");
+var detectedUsers = require("./app/routes/detectedUsers.route.js");
+var pathWay = require("./app/routes/pathWay.route.js");
 
 
 //launch Server
@@ -28,3 +30,5 @@ server.listen(1300, function(){
 //ROUTES
 app.use("/authentication", authRoute);
 app.use("/dashboard", dashRoute);
+app.use("/detectedUsers/", detectedUsers);
+app.use("/pathWay", pathWay);

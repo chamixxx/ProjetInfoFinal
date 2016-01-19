@@ -15,7 +15,21 @@
             </div>
         </md-toolbar>
         <div class="md-tabs-content padding-40">
+
             <md-card>
+                <md-select placeholder="Choose data type" ng-model="chartOption.dataType">
+                    <md-option value="ROS">ROS</md-option>
+                    <md-option value="Meteo">Meteo</md-option>
+                </md-select>
+            </md-card>
+
+            <md-card ng-if="chartOption.dataType == 'ROS'">
+                <md-select placeholder="Choose a topic" ng-model="chartOption.topic">
+                    <md-option value="detected_users">detected_users</md-option>
+                </md-select>
+            </md-card>
+            
+            <md-card ng-if="chartOption.dataType == 'Meteo'">
                 <md-select placeholder="Choose a city" ng-model="chartOption.city">
                     <md-option value="Paris">Paris</md-option>
                     <md-option value="Lyon">Lyon</md-option>
@@ -47,11 +61,11 @@
 <div layout="row" layout-padding layout-wrap layout-fill style="padding-bottom: 32px; margin-left:32px;" ng-cloak dragula='"first-bag"' dragula-model='chartsSmall'>
   <div  flex-sm="45" flex-gt-sm="30" flex-gt-md="30" layout layout-align="center center"   ng-repeat="chart in chartsSmall">
   {{$index}}
-  <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Line'">
+  <tri-widget chartjs-line-widget title="{{chart.dataType}}" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Line'">
       <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
    
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Bar'">
+    <tri-widget chartjs-line-widget title="{{chart.dataType}}" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Bar'">
       <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
     
@@ -62,11 +76,11 @@
   
   <div  flex-sm="90" flex-gt-sm="90" flex-gt-md="90" layout layout-align="center center" ng-repeat="chart in chartsBig">
   {{$index}}
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Line'">
+    <tri-widget chartjs-line-widget title="{{chart.dataType}}" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Line'">
       <canvas class="chart-line" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
    
-    <tri-widget chartjs-line-widget title="Meteo" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Bar'">
+    <tri-widget chartjs-line-widget title="{{chart.dataType}}" subtitle=" {{chart.city}}" content-layout="row" content-padding ng-if="chart.type == 'Bar'">
       <canvas class="chart-bar" chart-data="chart.data" chart-labels="chart.labels" chart-legend="true" chart-series="chart.series" ></canvas>  
     </tri-widget>
     
